@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.dataAccess.DADeudas;
+
 import asistente.clase.Pedido;
 import asistente.util.CtaCte;
 
@@ -27,8 +29,11 @@ public class Deuda implements Operacion {
 		matcher = pattern.matcher(pedido.getMensaje());
 		while(matcher.find()) {
 			if(matcher.matches()) {
-				pedido.getDB().CtaCte_Insertar(matcher.group(1), pedido.getNameUsuario(), Float.parseFloat(matcher.group(2)));
-				return pedido.getNameUsuario() + " anotado.";
+				//pedido.getDB().CtaCte_Insertar(matcher.group(1), pedido.getNameUsuario(), Float.parseFloat(matcher.group(2)));
+				DADeudas daDeudas = new DADeudas();
+				boolean resultado = daDeudas.CtaCte_Insertar(matcher.group(1).substring(1), pedido.getNameUsuario().substring(1), Float.parseFloat(matcher.group(2)));
+				if(resultado)return pedido.getNameUsuario() + " anotado.";
+				return "No existe ese usuario";
 			}
 		}
 		//Me pago - CtaCte_Insertar
@@ -38,9 +43,13 @@ public class Deuda implements Operacion {
 		matcher = pattern.matcher(pedido.getMensaje());
 		while(matcher.find()) {
 			if(matcher.matches()) {
-				pedido.getDB().CtaCte_Insertar(pedido.getNameUsuario(), matcher.group(1), Float.parseFloat(matcher.group(2)));
-				return pedido.getNameUsuario() + " anotado.";
-			}
+			//	pedido.getDB().CtaCte_Insertar(pedido.getNameUsuario(), matcher.group(1), Float.parseFloat(matcher.group(2)));
+				DADeudas daDeudas = new DADeudas();
+				boolean resultado = daDeudas.CtaCte_Insertar(pedido.getNameUsuario().substring(1), matcher.group(1).substring(1), Float.parseFloat(matcher.group(2)));
+				if(resultado)return pedido.getNameUsuario() + " anotado.";
+				return "No existe ese usuario";
+		
+				}
 		}
 		//Cuanto me deben - CtaCte_ConsultaSaldo
 		//"@jenkins cuánto me debe @juan?"
@@ -50,7 +59,9 @@ public class Deuda implements Operacion {
 		while(matcher.find()) {
 			if(matcher.matches()) {
 				String usuario1 = matcher.group(1);
-				float saldo = pedido.getDB().CtaCte_ConsultaSaldo(usuario1, pedido.getNameUsuario());
+				//float saldo = pedido.getDB().CtaCte_ConsultaSaldo(usuario1, pedido.getNameUsuario());
+				DADeudas daDeudas = new DADeudas();
+				float saldo = daDeudas.CtaCte_ConsultaSaldo(usuario1, pedido.getNameUsuario());
 				if(saldo > 0) {
 					//"@delucas @juan te debe $50",
 					return pedido.getNameUsuario() + " " + usuario1 + " te debe $" + String.format(formatoRedondeo(saldo), Math.abs(saldo)).replace(",", ".");
@@ -69,7 +80,10 @@ public class Deuda implements Operacion {
 		while(matcher.find()) {
 			if(matcher.matches()) {
 				String usuario1 = matcher.group(1);
-				float saldo = pedido.getDB().CtaCte_ConsultaSaldo(pedido.getNameUsuario(), usuario1);
+				//float saldo = pedido.getDB().CtaCte_ConsultaSaldo(pedido.getNameUsuario(), usuario1);
+				DADeudas daDeudas = new DADeudas();
+				float saldo = daDeudas.CtaCte_ConsultaSaldo(pedido.getNameUsuario(), usuario1);
+			
 				if(saldo > 0) {
 					//"@delucas debés $1 a @juan"
 					return pedido.getNameUsuario() + " debés $" + String.format(formatoRedondeo(saldo), Math.abs(saldo)).replace(",", ".") + " a " + usuario1;
@@ -87,8 +101,11 @@ public class Deuda implements Operacion {
 		matcher = pattern.matcher(pedido.getMensaje());
 		while(matcher.find()) {
 			if(matcher.matches()) {
-				pedido.getDB().CtaCte_Insertar(matcher.group(1), pedido.getNameUsuario(), Float.parseFloat(matcher.group(2)));
-				return pedido.getNameUsuario() + " anotado.";
+				//pedido.getDB().CtaCte_Insertar(matcher.group(1), pedido.getNameUsuario(), Float.parseFloat(matcher.group(2)));
+				DADeudas daDeudas = new DADeudas();
+				boolean resultado = daDeudas.CtaCte_Insertar( pedido.getNameUsuario().substring(1),matcher.group(1).substring(1), Float.parseFloat(matcher.group(2)));
+				if(resultado)return pedido.getNameUsuario() + " anotado.";
+				return "No existe ese usuario";
 			}
 		}
 		//le debo - CtaCte_Insertar
@@ -98,8 +115,11 @@ public class Deuda implements Operacion {
 		matcher = pattern.matcher(pedido.getMensaje());
 		while(matcher.find()) {
 			if(matcher.matches()) {
-				pedido.getDB().CtaCte_Insertar(pedido.getNameUsuario(), matcher.group(2), Float.parseFloat(matcher.group(1)));
-				return pedido.getNameUsuario() + " anotado.";
+				//pedido.getDB().CtaCte_Insertar(pedido.getNameUsuario(), matcher.group(2), Float.parseFloat(matcher.group(1)));
+				DADeudas daDeudas = new DADeudas();
+				boolean resultado = daDeudas.CtaCte_Insertar(pedido.getNameUsuario().substring(1), matcher.group(2).substring(1), Float.parseFloat(matcher.group(1)));
+				if(resultado)return pedido.getNameUsuario() + " anotado.";
+				return "No existe ese usuario";
 			}
 		}
 		//Mi estado de deudas - CtaCte_ConsultaEstadoDeuda
@@ -111,7 +131,10 @@ public class Deuda implements Operacion {
 			if(matcher.matches()) {
 				boolean conDeuda = false;
 				boolean conCredito = false;
-				List<CtaCte> lista = pedido.getDB().CtaCte_ConsultaEstadoDeuda(pedido.getNameUsuario());
+				//List<CtaCte> lista = pedido.getDB().CtaCte_ConsultaEstadoDeuda(pedido.getNameUsuario());
+				DADeudas daDeudas = new DADeudas();
+				
+				List<CtaCte> lista = daDeudas.CtaCte_ConsultaEstadoDeuda(pedido.getNameUsuario().substring(1));
 				//"@delucas le debés $60 a @maria. @juan te debe $50"
 				//"@delucas @juan te debe $100. @maria te debe $100",
 				String respuesta = pedido.getNameUsuario();
@@ -161,7 +184,10 @@ public class Deuda implements Operacion {
 		matcher = pattern.matcher(pedido.getMensaje());
 		while(matcher.find()) {
 			if(matcher.matches()) {
-				if(pedido.getDB().CtaCte_Simplificar(pedido.getNameUsuario(), matcher.group(1), matcher.group(2))) {
+				DADeudas daDeudas = new DADeudas();
+				
+			//	if(pedido.getDB().CtaCte_Simplificar(pedido.getNameUsuario(), matcher.group(1), matcher.group(2))) {
+				if(daDeudas.CtaCte_Simplificar(pedido.getNameUsuario(), matcher.group(1), matcher.group(2))) {
 					return pedido.getNameUsuario() + " bueno.";
 				}else {
 					return pedido.getNameUsuario() + ", no se puede simplificar deudas.";
@@ -176,8 +202,11 @@ public class Deuda implements Operacion {
 		while(matcher.find()) {
 			if(matcher.matches()) {
 //				System.out.println("se ejecuto");
-				String[] v_usuarios = {pedido.getNameUsuario(), matcher.group(1), matcher.group(2)};
-				pedido.getDB().CtaCte_DeudasGrupales(v_usuarios, Float.parseFloat(matcher.group(3)), matcher.group(4));
+				String[] v_usuarios = {pedido.getNameUsuario().substring(1), matcher.group(1).substring(1), matcher.group(2).substring(1)};
+				DADeudas daDeudas = new DADeudas();
+				
+				//pedido.getDB().CtaCte_DeudasGrupales(v_usuarios, Float.parseFloat(matcher.group(3)), matcher.group(4));
+				daDeudas.CtaCte_DeudasGrupales(v_usuarios, Float.parseFloat(matcher.group(3)), matcher.group(4).substring(1));
 				return pedido.getNameUsuario() + " anotado.";
 			}
 		}
@@ -188,8 +217,11 @@ public class Deuda implements Operacion {
 		while(matcher.find()) {
 			if(matcher.matches()) {
 //				System.out.println("se ejecuto");
-				String[] v_usuarios = {pedido.getNameUsuario(), matcher.group(1), matcher.group(2)};
-				pedido.getDB().CtaCte_DeudasGrupales(v_usuarios, Float.parseFloat(matcher.group(3)), pedido.getNameUsuario());
+				String[] v_usuarios = {pedido.getNameUsuario().substring(1), matcher.group(1).substring(1), matcher.group(2).substring(1)};
+				DADeudas daDeudas = new DADeudas();
+				
+			//	pedido.getDB().CtaCte_DeudasGrupales(v_usuarios, Float.parseFloat(matcher.group(3)), pedido.getNameUsuario());
+				daDeudas.CtaCte_DeudasGrupales(v_usuarios, Float.parseFloat(matcher.group(3)), pedido.getNameUsuario().substring(1));
 				return pedido.getNameUsuario() + " anotado.";
 			}
 		}

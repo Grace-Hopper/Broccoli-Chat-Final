@@ -28,7 +28,9 @@ public class DAUsuario {
 	}
 	
 	public boolean usuarioExistente(String nombre, String pass) {
-							
+		if(session==null)
+			session = ConectorSingleton.getInstance().getSession();
+				
 		CriteriaBuilder cb1 = session.getCriteriaBuilder();
 		CriteriaQuery<Usuario> criteriaQuery = cb1.createQuery(Usuario.class);
 		Root<Usuario> tabla = criteriaQuery.from(Usuario.class);
@@ -42,7 +44,7 @@ public class DAUsuario {
 		for(Usuario u: lista) {
 			if(u.getNombre().equals(nombre) && u.getPassword().equals(pass)) return true;
 		}
-		
+		session.close();
 		return false;
 		
 	}

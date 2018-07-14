@@ -19,18 +19,22 @@ public class DAEvento {
 	
 	public List<CampoEvento> obtenerEventos(String usuario) {
 		//criteriaQuery.select(tabla).where(cb1.equal(tabla.get("alias"), alias));
+		if(session==null)
+			session = ConectorSingleton.getInstance().getSession();
 		String hquery = "FROM CampoEvento E WHERE E.usuario =:usuario";
 		Query query = session.createQuery(hquery);
 		query.setParameter("usuario",usuario);
 		List<CampoEvento> lista = query.getResultList();
-		session.flush();
+
 		session.clear();
-		
+		session.close();
 		return lista;
 	}
 	
 	public void agregarEvento(CampoEvento evento){
-			
+		if(session==null)
+			session = ConectorSingleton.getInstance().getSession();
+	
 		Transaction transaccion = null;
 		try{
 		transaccion = session.beginTransaction();

@@ -23,6 +23,9 @@ public class DARobotica {
 	}
 	
 	public List<Robotica> obtenerTodasLasFrase() {
+		if(session==null)
+			session = ConectorSingleton.getInstance().getSession();
+	
 		CriteriaBuilder cb1 = session.getCriteriaBuilder();
 		CriteriaQuery<Robotica> criteriaQuery = cb1.createQuery(Robotica.class);
 		Root<Robotica> tabla = criteriaQuery.from(Robotica.class);
@@ -38,10 +41,14 @@ public class DARobotica {
 		for(Robotica r: lista) {
 			frases.add(r.getFrase());
 		}*/
+		session.close();
 		return lista;
 		
 	}
 	public String obtenerFraseNumero(int numeroDeFrase) {
+		if(session==null)
+			session = ConectorSingleton.getInstance().getSession();
+	
 		CriteriaBuilder cb1 = session.getCriteriaBuilder();
 		CriteriaQuery<Robotica> criteriaQuery = cb1.createQuery(Robotica.class);
 		Root<Robotica> tabla = criteriaQuery.from(Robotica.class);
@@ -52,6 +59,7 @@ public class DARobotica {
 		//Criteria c= session.createCriteria(Usuario.class);
 		//List<Usuario> lista= (List<Usuario>) c.list(); 
 		
+		session.close();
 		
 		if(numeroDeFrase>0 && numeroDeFrase<lista.size())
 			return	lista.get(numeroDeFrase).getFrase();
@@ -59,6 +67,9 @@ public class DARobotica {
 	}
 	
 	public String obtenerFraseRandom() {
+		if(session==null)
+			session = ConectorSingleton.getInstance().getSession();
+	
 		CriteriaBuilder cb1 = session.getCriteriaBuilder();
 		CriteriaQuery<Robotica> criteriaQuery = cb1.createQuery(Robotica.class);
 		Root<Robotica> tabla = criteriaQuery.from(Robotica.class);
@@ -68,6 +79,7 @@ public class DARobotica {
 
 		//Criteria c= session.createCriteria(Usuario.class);
 		//List<Usuario> lista= (List<Usuario>) c.list(); 
+		session.close();
 		
 		
 		Random random=new Random(System.currentTimeMillis());

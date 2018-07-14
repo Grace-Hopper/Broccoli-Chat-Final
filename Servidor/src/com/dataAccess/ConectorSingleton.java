@@ -7,6 +7,7 @@ public final class ConectorSingleton {
 
     private static ConectorSingleton instance = new ConectorSingleton();
     private Session session;
+    SessionFactory factory;
     private ConectorSingleton() {}
     
     public static ConectorSingleton getInstance() {
@@ -15,10 +16,11 @@ public final class ConectorSingleton {
     public Session getSession() {
 
         if (session == null) {
-            SessionFactory factory = new Configuration().configure().buildSessionFactory();
+             factory = new Configuration().configure().buildSessionFactory();
             session = factory.openSession();
         }
-
+        if(!session.isOpen())
+        	  session = factory.openSession();
         return session;
 
     }

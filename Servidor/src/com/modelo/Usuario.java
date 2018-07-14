@@ -1,5 +1,8 @@
 package com.modelo;
 
+import java.util.Set;
+
+import javax.persistence.OneToMany;
 
 /**
  * El Usuario es con lo que cada persona se registra. Nombre y Password. No sabe nada de Sockets. <b>Solo se usa para Login</b>.
@@ -14,7 +17,11 @@ public class Usuario {
 	String password;
 	
 	public Usuario() {}
-
+	
+	/*@OneToMany
+	private Set<Deudas> acreedores;
+	@OneToMany
+	private Set<Deudas> deudores;*/
 	public Usuario(String usuario, String password) {
 		this.nombre = usuario;
 		this.password = password;
